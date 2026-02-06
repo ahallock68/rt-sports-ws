@@ -1,5 +1,4 @@
 import { WebSocket, WebSocketServer } from "ws";
-import { set } from "zod";
 
 function sendJson(socket, payload) {
   if (socket.readyState !== WebSocket.OPEN) return;
@@ -19,7 +18,7 @@ export function attachWebSocketServer(server) {
   const wss = new WebSocketServer({
     server,
     path: "/ws",
-    maxPlayload: 1024 * 1024,
+    maxPayload: 1024 * 1024,
   });
 
   wss.on("connection", (socket) => {
