@@ -1,11 +1,9 @@
 import arcjet, { detectBot, shield, slidingWindow } from "@arcjet/node";
 
 const arcjetKey = process.env.ARCJET_KEY;
-const arcjetMode = process.env.ARCJET_MODE === "DRY_RUN" ? "DRY_RUN" : "LIVE";
+const arcjetMode = process.env.ARCJECT_MODE === "DRY_RUN" ? "DRY_RUN" : "LIVE";
 
-if (!process.env.ARCJET_KEY) {
-  throw new Error("ARCJET_KEY is not set in .env file");
-}
+if (!arcjetKey) throw new Error("ARCJET_KEY environment variable is missing.");
 
 export const httpArcjet = arcjetKey
   ? arcjet({
@@ -16,7 +14,7 @@ export const httpArcjet = arcjetKey
           mode: arcjetMode,
           allow: ["CATEGORY:SEARCH_ENGINE", "CATEGORY:PREVIEW"],
         }),
-        slidingWindow({ mode: arcjetMode, intervL: "10s", max: 50 }),
+        slidingWindow({ mode: arcjetMode, interval: "10s", max: 50 }),
       ],
     })
   : null;
@@ -30,7 +28,7 @@ export const wsArcjet = arcjetKey
           mode: arcjetMode,
           allow: ["CATEGORY:SEARCH_ENGINE", "CATEGORY:PREVIEW"],
         }),
-        slidingWindow({ mode: arcjetMode, intervL: "2s", max: 5 }),
+        slidingWindow({ mode: arcjetMode, interval: "2s", max: 5 }),
       ],
     })
   : null;
@@ -44,13 +42,13 @@ export function securityMiddleware() {
 
       if (decision.isDenied()) {
         if (decision.reason.isRateLimit()) {
-          return res.status(429).json({ error: "Rate Limit Exceeded" });
+          return res.status(429).json({ error: "Too many requests." });
         }
 
-        return res.status(403).json({ error: "Forbidden" });
+        return res.status(403).json({ error: "Forbidden." });
       }
     } catch (e) {
-      console.error("Arcjet MIddleware Error", e);
+      console.error("Arcjet middleware error", e);
       return res.status(503).json({ error: "Service Unavailable" });
     }
 
