@@ -75,6 +75,7 @@ function handleMessage(socket, data) {
     unsubscribe(socket, message.matchId);
     socket.subscriptions.delete(message.matchId);
     sendJson(socket, { type: "unsubscribed", matchId: message.matchId });
+    return;
   }
 }
 

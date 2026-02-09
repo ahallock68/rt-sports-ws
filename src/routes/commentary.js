@@ -1,8 +1,12 @@
 import { Router } from "express";
-import { createCommentarySchema } from "../validation/commentary.js";
+import {
+  createCommentarySchema,
+  listCommentaryQuerySchema,
+} from "../validation/commentary.js";
 import { matchIdParamSchema } from "../validation/matches.js";
 import { commentary } from "../db/schema.js";
 import { db } from "../db/db.js";
+import { desc, eq } from "drizzle-orm";
 
 const MAX_LIMIT = 100;
 
